@@ -6,8 +6,8 @@ script:
   # Grab Alpine rootfs
   - wget -O rootfs.tar.xz http://dl-cdn.alpinelinux.org/alpine/v3.9/releases/x86_64/alpine-minirootfs-3.9.0-x86_64.tar.gz
   # Build image
-  - docker build -t tronyx/base-alpine .
+  - docker build -t organizrtools/base-alpine .
 after_success:
   # Push image if not a PR
   - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker login -u "$DOCKER_USER" -p "$DOCKER_PASS" ${DOCKER_REGISTRY}; fi'
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker push tronyx/base-alpine; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then docker push organizrtools/base-alpine; fi'
