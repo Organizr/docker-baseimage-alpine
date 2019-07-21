@@ -1,11 +1,46 @@
-FROM scratch
-LABEL maintainer=christronyxyocum
+FROM alpine:3.10 as rootfs-stage
+LABEL MAINTAINER="organizrTools,christronyxyocum"
 
-# Add Alpine rootfs
-ADD rootfs.tar.xz /
+# environment
+ENV REL=v3.10
+ENV ARCH=x86_64
+ENV MIRROR=http://dl-cdn.alpinelinux.org/alpine
+ENV PACKAGES=alpine-baselayout,\
+alpine-keys,\
+apk-tools,\
+busybox,\
+libc-utils,\
+xz
+
+# install packages
+RUN \
+ apk add --no-cache \
+	bash \
+	curl \
+	tzdata \
+	xz
+
+# fetch builder script from gliderlabs
+RUN \
+ curl -o \
+ /mkimage-alpine.bash -L \
+	https://raw.githubusercontent.com/gliderlabs/docker-alpine/master/builder/scripts/mkimage-alpine.bash && \
+ chmod +x \
+	/mkimage-alpine.bash && \
+ ./mkimage-alpine.bash  && \
+ mkdir /root-out && \
+ tar xf \
+	/rootfs.tar.xz -C \
+	/root-out && \
+ sed -i -e 's/^root::/root:!:/' /root-out/etc/shadow
+
+# Runtime stage
+FROM scratch
+COPY --from=rootfs-stage /root-out/ /
+LABEL MAINTAINER="organizrTools,christronyxyocum"
 
 # set version for s6 overlay
-ARG OVERLAY_VERSION="v1.22.0.0"
+ARG OVERLAY_VERSION="v1.22.1.0"
 ARG OVERLAY_ARCH="amd64"
 
 # environment variables
