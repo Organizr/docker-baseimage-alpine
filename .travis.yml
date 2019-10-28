@@ -4,7 +4,7 @@ services:
 language: bash
 script:
   # Grab Alpine rootfs
-  - wget -O rootfs.tar.xz http://dl-cdn.alpinelinux.org/alpine/v3.9/releases/x86_64/alpine-minirootfs-3.9.0-x86_64.tar.gz
+  - wget -O rootfs.tar.xz http://dl-cdn.alpinelinux.org/alpine/v3.10/releases/x86_64/alpine-minirootfs-3.10.0-x86_64.tar.gz
   # Build image
   - docker build -t organizrtools/base-alpine .
 after_success:
